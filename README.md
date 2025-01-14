@@ -2,6 +2,8 @@
 
 Check out the live demo of this project [here](https://www.defytimefitness.com/).
 
+Note: There is currently no option to sign up.
+
 ## Overview
 
 The Movement Snack App is the Duolingo of strength training: You can get stronger in just 30 seconds a day, even if you are at work or wearing heels.
