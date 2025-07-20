@@ -2,6 +2,13 @@
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
 import { getUser } from "./_libs/clientCrud";
+import { ClerkProvider,
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton
+} 
+  from "@clerk/nextjs";
 
 import Button from "./_components/Button/Button";
 import FormField from "./_components/FormField/FormField";
@@ -52,29 +59,39 @@ export default function Home() {
     placeholder: 'password'
   }
   return (
-    <main className="main">
-      <section className="login">
-        <div className="login__div">
-          <form onSubmit={verifyUser}
-          >
-            <FormField formFieldProps={usernameInputProps} />
-            <FormField formFieldProps={passwordInputProps} />
-            <Button buttonProps={buttonProps} />
-          </form>
-          <p>
-            Tip: If you just want to browse, leave the fields blank.
-          </p>
-        </div>
-        <div className="login__div">
-          {/* <h2 className="headline6">Demo Video</h2> */}
-          <Video
-            src='./videos/app-demo.mp4'
-            title='app demo video'
-            className='app-demo__video'
-            poster='./images/dashboard-page.png'
-          />
-        </div>
-      </section>
-    </main>
+    <>
+      <header className="header--login">
+        <SignedOut>
+          <SignInButton />
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
+      </header>
+      <main className="main--flush-to-top">
+        <section className="login">
+          <div className="login__div">
+            <form onSubmit={verifyUser}
+            >
+              <FormField formFieldProps={usernameInputProps} />
+              <FormField formFieldProps={passwordInputProps} />
+              <Button buttonProps={buttonProps} />
+            </form>
+            <p>
+              Tip: If you just want to browse, leave the fields blank.
+            </p>
+          </div>
+          <div className="login__div">
+            {/* <h2 className="headline6">Demo Video</h2> */}
+            <Video
+              src='./videos/app-demo.mp4'
+              title='app demo video'
+              className='app-demo__video'
+              poster='./images/dashboard-page.png'
+            />
+          </div>
+        </section>
+      </main>
+    </>
   );
 }

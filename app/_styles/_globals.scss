@@ -23,6 +23,19 @@ h1 {
   @include heading-margin;
 }
 
+.header--login {
+  @include flex-mixin--row(100%);
+  justify-content: space-between;
+  padding: $spacing--mobile $page-margin--mobile;
+  background-color: transparent;
+  width: fit-content;
+  z-index: 1;
+
+  @include tablet {
+    padding: $spacing--mobile $page-margin--tablet;
+  }
+}
+
 .main {
   @include flex-mixin--column(100%);
   @include component-spacing;
@@ -58,6 +71,12 @@ h1 {
     & h2 {
       @extend .responsive-h2;
     }
+  }
+
+  &--flush-to-top {
+    @extend .main;
+    position: absolute;
+    top: 0;
   }
 }
 

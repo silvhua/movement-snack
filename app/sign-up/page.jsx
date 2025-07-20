@@ -45,7 +45,7 @@ const SignUp = () => {
     <main className="main">
       <section className="">
         <form onSubmit={validateForm}>
-
+          <h1>Sign Up</h1>
         </form>
       </section>
 
