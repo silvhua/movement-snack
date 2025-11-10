@@ -1,23 +1,39 @@
 // import './DownloadCsv.scss';
 import Button from '../Button/Button';
-import { getReadableTimestamp } from '@/app/_libs/utils';
+import { formatDate } from '@/app/_libs/dataProcessing';
 
-const DownloadCsv = ({ data, fileName, appendTimestamp }) => {
+const DownloadCsv = ({ data, fileName, csvMapping, appendTimestamp }) => {
   if (appendTimestamp) {
-    fileName = `${fileName}_${getReadableTimestamp(seconds = true)}`;
+    fileName = `${fileName}_${formatDate(new Date(), 'filename')}`;
   }
 
   const convertToCSV = (objArray, addHeader) => {
-    const array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+    let array = typeof objArray !== 'object' ? JSON.parse(objArray) : objArray;
+    if (csvMapping) {
+      array = array.map(object => {
+        const simplifiedObject = {};
+        Object.keys(csvMapping).forEach(property => {
+          const mappedColumn = csvMapping[property];
+          let value = object[property];
+          if (value === null || value === 'null') {
+            value = "";
+          } else if (value instanceof Date) {
+            value = formatDate(value, 'readable timestamp')
+          }
+          simplifiedObject[mappedColumn] = value
+        })
+        return simplifiedObject
+      })
+    }
     let str = '';
 
     if (addHeader) {
       const headerObject = {}
-      const columns = Object.keys(objArray[0]).forEach(key => {
-        headerObject[key] = key
+      Object.keys(array[0]).forEach(key => {
+        headerObject[key] = key;
       });
 
-      objArray = objArray.unshift(headerRow);
+      objArray = array.unshift(headerObject);
     }
 
     for (let i = 0; i < array.length; i++) {
@@ -38,7 +54,7 @@ const DownloadCsv = ({ data, fileName, appendTimestamp }) => {
   };
 
   const downloadCSV = () => {
-    const csvData = new Blob([convertToCSV(data)], { type: 'text/csv' });
+    const csvData = new Blob([convertToCSV(data, true)], { type: 'text/csv' });
     const csvURL = URL.createObjectURL(csvData);
     const link = document.createElement('a');
     link.href = csvURL;

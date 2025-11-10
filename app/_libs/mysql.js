@@ -13,6 +13,10 @@ const pool = mysql.createPool({
     waitForConnections: true,
     queueLimit: 0, // The maximum number of connection requests the pool will queue before returning an error from getConnection.
     idleTimeout: 30000, // 30 seconds idle timeout
+    acquireTimeout: 20000, // 20 seconds to acquire connection
+    timeout: 60000, // 60 seconds query timeout
+    reconnect: true,
+    multipleStatements: false
 })
 // pool.end(); // remove the pool
 export default pool
