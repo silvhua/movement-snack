@@ -10,6 +10,8 @@ export default async function sqlSelect(query, getFirst, binaryColumns) {
   */
   
   let db;
+  let shouldRedirect = false;
+  
   try {
     db = await pool.getConnection();
     const result = await db.execute(query);
@@ -31,18 +33,20 @@ export default async function sqlSelect(query, getFirst, binaryColumns) {
       })
     }
     // console.log(`utils.js sqlQuery`, query)
-    db.release();
     return rows;
   } catch (error) {
     if (error) {
-      console.error(error);
+      console.error('Database error:', error);
     }
-    redirect('/redirect')
+    shouldRedirect = true;
     return null;
   } finally {
     if (db) {
-      
       db.release();
+    }
+    // Redirect after connection is safely released
+    if (shouldRedirect) {
+      redirect('/redirect');
     }
   }
 }
@@ -69,7 +73,6 @@ export async function apiSqlQuery(query, getFirst, binaryColumns) {
       })
     }
     // console.log(`utils.js apiSqlQuery`, query)
-    db.release();
     if (!getFirst) {
       return NextResponse.json(rows)
     } else if (rows?.length > 0) {
@@ -82,7 +85,7 @@ export async function apiSqlQuery(query, getFirst, binaryColumns) {
     }
     
   } catch (error) {
-    console.error(error);
+    console.error('Database error:', error);
     return NextResponse.json({
       error: 'Unable to perform request.'
     }, { status: 500 })
